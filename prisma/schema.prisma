@@ -38,6 +38,7 @@ model NguoiDung {
   birth_day String?   @db.VarChar(250)
   gender    String?   @db.VarChar(250)
   role      String?   @db.VarChar(250)
+  avatar    String?   @db.VarChar(255)
   BinhLuan  BinhLuan?
   DatPhong  DatPhong?
   Phong     Phong?
