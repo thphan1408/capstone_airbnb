@@ -5,7 +5,7 @@ import signUpDTO from './dto/signup.dto';
 import signInDTO from './dto/signin.dto';
 
 @ApiTags('Auth')
-@Controller('auth')
+@Controller('api/auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
@@ -18,7 +18,8 @@ export class AuthController {
 
   @Post('/signin')
   @ApiBody({ type: signInDTO, required: true })
-  signIn(@Body() body: signInDTO): Promise<any> {
-    return this.authService.signIn(body);
+  async signIn(@Body() body: signInDTO, @Res() response): Promise<any> {
+    const data = await this.authService.signIn(body);
+    response.status(data.status).json(data);
   }
 }

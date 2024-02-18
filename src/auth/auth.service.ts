@@ -47,7 +47,7 @@ export class AuthService {
           data: newUser,
         });
         return {
-          status: 200,
+          status: 201,
           title: 'Success',
           message: 'Sign up success',
         };
@@ -99,11 +99,16 @@ export class AuthService {
             },
           };
         }
-      } else {
         return {
           status: 400,
           title: 'Bad Request',
-          message: 'Email or password is incorrect',
+          message: 'Password is not correct',
+        };
+      } else {
+        return {
+          status: 404,
+          title: 'Not Found',
+          message: 'User not found',
         };
       }
     } catch (error) {
