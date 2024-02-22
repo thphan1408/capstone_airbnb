@@ -5,6 +5,7 @@ import { PrismaClient } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import signInDTO from './dto/signin.dto';
 import { JwtService } from '@nestjs/jwt';
+import { initAvatar } from 'src/utils/initAvatar';
 
 @Injectable()
 export class AuthService {
@@ -32,6 +33,7 @@ export class AuthService {
           message: 'Email already exists',
         };
       } else {
+        const newAvatar = initAvatar(name);
         const endcodePassword = bcrypt.hashSync(pass_word, 10);
         const newUser = {
           name,
@@ -41,6 +43,7 @@ export class AuthService {
           birth_day,
           gender,
           role,
+          avatar: newAvatar,
         };
 
         await this.prisma.nguoiDung.create({
@@ -83,6 +86,7 @@ export class AuthService {
             phone: user.phone,
             birth_day: user.birth_day,
             gender: user.gender,
+            avatar: user.avatar,
           };
 
           const token = this.jwtService.sign(payload, {

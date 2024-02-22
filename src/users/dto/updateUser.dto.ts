@@ -1,11 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty } from 'class-validator';
+import { IsEmail, IsNotEmpty } from 'class-validator';
 
-export default class signUpDTO {
+export default class UpdateUserDto {
   @ApiProperty()
   name: string;
-
   @ApiProperty()
+  @IsEmail({})
   email: string;
 
   @ApiProperty()
@@ -23,4 +23,6 @@ export default class signUpDTO {
 
   @ApiProperty()
   role: string;
+
+  avatar: string;
 }
