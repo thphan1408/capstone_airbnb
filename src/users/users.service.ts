@@ -3,6 +3,8 @@ import { PrismaClient } from '@prisma/client';
 import { IResponse } from 'src/utils/response';
 import CreateUserDto from './dto/createUser.dto';
 import * as bcrypt from 'bcrypt';
+import UpdateUserDto from './dto/updateUser.dto';
+import { initAvatar } from 'src/utils/initAvatar';
 
 @Injectable()
 export class UsersService {
@@ -54,6 +56,7 @@ export class UsersService {
           message: 'Email already exists',
         };
       } else {
+        const newAvatar = initAvatar(name);
         const endcodePassword = bcrypt.hashSync(pass_word, 10);
         const newData = {
           name: name,
@@ -63,6 +66,7 @@ export class UsersService {
           birth_day: birth_day,
           gender: gender,
           role: role,
+          avatar: newAvatar,
         };
         await this.prisma.nguoiDung.create({
           data: newData,
@@ -170,6 +174,7 @@ export class UsersService {
           birth_day: true,
           gender: true,
           role: true,
+          avatar: true,
         },
       });
       return {
@@ -186,4 +191,104 @@ export class UsersService {
       };
     }
   }
+
+  async getUserById(id: string): Promise<any> {
+    try {
+      const data = await this.prisma.nguoiDung.findFirst({
+        where: {
+          id: +id,
+        },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          phone: true,
+          birth_day: true,
+          gender: true,
+          role: true,
+        },
+      });
+
+      if (!data) {
+        return {
+          status: 404,
+          content: 'Not Found',
+          message: `Users not found with id: ${id}`,
+        };
+      }
+
+      return {
+        status: 200,
+        content: 'Success',
+        message: 'Get user success',
+        data: data,
+      };
+    } catch (error) {
+      return {
+        status: 500,
+        content: 'Internal Server Error',
+        message: error,
+      };
+    }
+  }
+
+  async updateUser(id: string, body: UpdateUserDto): Promise<any> {
+    try {
+      const { name, email, pass_word, phone, birth_day, gender, role, avatar } =
+        body;
+      const user = await this.prisma.nguoiDung.findFirst({
+        where: {
+          id: +id,
+        },
+      });
+
+      if (!user) {
+        return {
+          status: 404,
+          content: 'Not Found',
+          message: `Users not found with id: ${id}`,
+        };
+      }
+      // const newAvatar = initAvatar(name);
+      const endcodePassword = bcrypt.hashSync(pass_word, 10);
+      const newData = {
+        name: name,
+        email: email,
+        pass_word: endcodePassword,
+        phone: phone,
+        birth_day: birth_day,
+        gender: gender,
+        role: role,
+        avatar: avatar,
+      };
+      await this.prisma.nguoiDung.update({
+        where: {
+          id: +id,
+        },
+        data: newData,
+      });
+      return {
+        status: 200,
+        content: 'Success',
+        message: 'Update user success',
+      };
+    } catch (error) {
+      return {
+        status: 500,
+        content: 'Internal Server Error',
+        message: error,
+      };
+    }
+  }
+
+  // async uploadAvatar(file: any): Promise<any> {
+  //   try {
+  //   } catch (error) {
+  //     return {
+  //       status: 500,
+  //       content: 'Internal Server Error',
+  //       message: error,
+  //     };
+  //   }
+  // }
 }
