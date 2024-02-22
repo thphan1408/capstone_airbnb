@@ -7,7 +7,11 @@ CREATE TABLE NguoiDung(
     birth_day VARCHAR(250),
     gender VARCHAR(250),
     role VARCHAR(250)
-) 
+    avatar VARCHAR(250)
+)
+
+-- ALTER TABLE NguoiDung
+-- ADD avatar VARCHAR(255)
 
 CREATE TABLE Phong(
     id INT PRIMARY KEY AUTO_INCREMENT,
