@@ -10,7 +10,6 @@ import {
 import { RoomsService } from './rooms.service';
 import { ApiBearerAuth, ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { CreateRoomDto } from './dto/createRoom.dto';
-import { create } from 'domain';
 import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('Rooms')
