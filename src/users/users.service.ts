@@ -1,6 +1,6 @@
+import { verify } from 'jsonwebtoken';
 import { Injectable } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
-import { IResponse } from 'src/utils/response';
 import CreateUserDto from './dto/createUser.dto';
 import * as bcrypt from 'bcrypt';
 import UpdateUserDto from './dto/updateUser.dto';
@@ -86,11 +86,15 @@ export class UsersService {
     }
   }
 
-  async deleteUser(id: number): Promise<any> {
+  async deleteUser(token: string, id: number): Promise<any> {
     try {
+      const tokenDecode = verify(token, process.env.SECRET_KEY) as {
+        role: string;
+      };
+
       const checkUser = await this.prisma.nguoiDung.findFirst({
         where: {
-          id: +id,
+          id_nguoi_dung: +id,
         },
       });
 
@@ -101,17 +105,19 @@ export class UsersService {
           message: 'User not found',
         };
       }
-      // check user is admin
-      if (checkUser.role !== 'admin') {
+
+      // check token có phải admin không
+      if (tokenDecode.role.toLowerCase() !== 'admin') {
         return {
           status: 403,
           content: 'Forbidden',
           message: 'You cannot delete this user',
         };
       }
+
       await this.prisma.nguoiDung.delete({
         where: {
-          id: id,
+          id_nguoi_dung: id,
         },
       });
 
@@ -130,19 +136,32 @@ export class UsersService {
   }
 
   async getListUsers(
-    page: string,
-    size: string,
+    page: string | undefined,
+    size: string | undefined,
     keyword: string,
   ): Promise<any> {
     try {
-      let numPage = Number(page);
-      let numSize = Number(size);
+      let numPage: number | undefined = undefined;
+      let numSize: number | undefined = undefined;
+
+      if (page !== undefined) {
+        numPage = Number(page);
+        if (isNaN(numPage)) {
+          throw new Error('Invalid value for page');
+        }
+      }
+
+      if (size !== undefined) {
+        numSize = Number(size);
+        if (isNaN(numSize)) {
+          throw new Error('Invalid value for size');
+        }
+      }
 
       keyword === null || (keyword === undefined && (keyword = ''));
-      numPage = isNaN(numPage) ? 1 : numPage;
-      numSize = isNaN(numSize) ? 10 : numSize;
 
-      const offset = (numPage - 1) * numSize;
+      const offset =
+        numPage !== undefined ? (numPage - 1) * numSize! : undefined;
 
       const data = await this.prisma.nguoiDung.findMany({
         skip: offset,
@@ -167,7 +186,7 @@ export class UsersService {
           ],
         },
         select: {
-          id: true,
+          id_nguoi_dung: true,
           name: true,
           email: true,
           phone: true,
@@ -196,10 +215,10 @@ export class UsersService {
     try {
       const data = await this.prisma.nguoiDung.findFirst({
         where: {
-          id: +id,
+          id_nguoi_dung: +id,
         },
         select: {
-          id: true,
+          id_nguoi_dung: true,
           name: true,
           email: true,
           phone: true,
@@ -238,7 +257,7 @@ export class UsersService {
         body;
       const user = await this.prisma.nguoiDung.findFirst({
         where: {
-          id: +id,
+          id_nguoi_dung: +id,
         },
       });
 
@@ -263,7 +282,7 @@ export class UsersService {
       };
       await this.prisma.nguoiDung.update({
         where: {
-          id: +id,
+          id_nguoi_dung: +id,
         },
         data: newData,
       });

@@ -42,7 +42,7 @@ export class AuthService {
           phone,
           birth_day,
           gender,
-          role,
+          role: 'User',
           avatar: newAvatar,
         };
 
@@ -79,7 +79,7 @@ export class AuthService {
 
         if (checkPassword) {
           const payload = {
-            id: user.id,
+            id: user.id_nguoi_dung,
             email: user.email,
             name: user.name,
             role: user.role,
