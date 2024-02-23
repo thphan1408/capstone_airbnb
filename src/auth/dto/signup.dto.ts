@@ -21,6 +21,6 @@ export default class signUpDTO {
   @ApiProperty()
   gender: string;
 
-  @ApiProperty()
+  // @ApiProperty()
   role: string;
 }

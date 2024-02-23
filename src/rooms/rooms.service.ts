@@ -6,19 +6,32 @@ import { CreateRoomDto } from './dto/createRoom.dto';
 export class RoomsService {
   prisma = new PrismaClient();
   async getListRooms(
-    page: string,
-    size: string,
+    page: string | undefined,
+    size: string | undefined,
     keyword: string,
   ): Promise<any> {
     try {
-      let numPage = Number(page);
-      let numSize = Number(size);
+      let numPage: number | undefined = undefined;
+      let numSize: number | undefined = undefined;
 
-      numPage = isNaN(numPage) ? 1 : numPage;
-      numSize = isNaN(numSize) ? 10 : numSize;
+      if (page !== undefined) {
+        numPage = Number(page);
+        if (isNaN(numPage)) {
+          throw new Error('Invalid value for page');
+        }
+      }
+
+      if (size !== undefined) {
+        numSize = Number(size);
+        if (isNaN(numSize)) {
+          throw new Error('Invalid value for size');
+        }
+      }
+
       keyword == null && (keyword = '');
 
-      const offset = (numPage - 1) * numSize;
+      const offset =
+        numPage !== undefined ? (numPage - 1) * numSize! : undefined;
 
       const data = await this.prisma.phong.findMany({
         skip: offset,

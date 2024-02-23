@@ -7,6 +7,8 @@ import {
   Post,
   Put,
   Query,
+  Req,
+  Request,
   Res,
   UploadedFile,
   UseGuards,
@@ -79,8 +81,13 @@ export class UsersController {
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt')) // middleware authentication
   @Delete('/users/:id')
-  async deleteUser(@Param('id') id: Number, @Res() response): Promise<any> {
-    const data = await this.usersService.deleteUser(+id);
+  async deleteUser(
+    @Param('id') id: Number,
+    @Res() response,
+    @Req() request,
+  ): Promise<any> {
+    const token = request.headers.authorization.split(' ')[1];
+    const data = await this.usersService.deleteUser(token, +id);
     response.status(data.status).json(data);
   }
 
