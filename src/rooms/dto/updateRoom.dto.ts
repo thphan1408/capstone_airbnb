@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateRoomDto {
+export class UpdateRoomDto {
   //   id: number;
   @ApiProperty()
   ten_phong: string;
