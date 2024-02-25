@@ -47,35 +47,31 @@ model NguoiDung {
   avatar        String?    @db.VarChar(255)
   BinhLuan      BinhLuan[]
   DatPhong      DatPhong[]
-  Phong         Phong[]
 }
 
 model Phong {
-  id_phong      Int        @id @default(autoincrement())
-  ten_phong     String?    @db.VarChar(250)
-  khach         Int?
-  phong_ngu     Int?
-  giuong        Int?
-  phong_tam     Int?
-  gia_tien      Int?
-  mo_ta         String?    @db.VarChar(250)
-  may_giat      Boolean?
-  ban_ui        Boolean?
-  tivi          Boolean?
-  dieu_hoa      Boolean?
-  wifi          Boolean?
-  bep           Boolean?
-  do_xe         Boolean?
-  ho_boi        Boolean?
-  hinh_anh      String?    @db.VarChar(250)
-  ma_vi_tri     Int?
-  id_nguoi_dung Int?
-  BinhLuan      BinhLuan[]
-  DatPhong      DatPhong[]
-  NguoiDung     NguoiDung? @relation(fields: [id_nguoi_dung], references: [id_nguoi_dung], onDelete: Cascade, onUpdate: NoAction, map: "Phong_ibfk_1")
-  ViTri         ViTri?     @relation(fields: [ma_vi_tri], references: [id_vi_tri], onDelete: Cascade, onUpdate: NoAction, map: "Phong_ibfk_2")
+  id_phong  Int        @id @default(autoincrement())
+  ten_phong String?    @db.VarChar(250)
+  khach     Int?
+  phong_ngu Int?
+  giuong    Int?
+  phong_tam Int?
+  gia_tien  Int?
+  mo_ta     String?    @db.VarChar(250)
+  may_giat  Boolean?
+  ban_ui    Boolean?
+  tivi      Boolean?
+  dieu_hoa  Boolean?
+  wifi      Boolean?
+  bep       Boolean?
+  do_xe     Boolean?
+  ho_boi    Boolean?
+  hinh_anh  String?    @db.VarChar(250)
+  ma_vi_tri Int?
+  BinhLuan  BinhLuan[]
+  DatPhong  DatPhong[]
+  ViTri     ViTri?     @relation(fields: [ma_vi_tri], references: [id_vi_tri], onDelete: Cascade, onUpdate: NoAction, map: "Phong_ibfk_1")
 
-  @@index([id_nguoi_dung], map: "id_nguoi_dung")
   @@index([ma_vi_tri], map: "ma_vi_tri")
 }
 

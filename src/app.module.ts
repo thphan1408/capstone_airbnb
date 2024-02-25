@@ -5,6 +5,7 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { RoomsModule } from './rooms/rooms.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
 
 @Module({
   imports: [
@@ -13,10 +14,11 @@ import { RoomsModule } from './rooms/rooms.module';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    ServeStaticModule.forRoot({
+      rootPath: "./public",
+    }),
     RoomsModule,
-    // ServeStaticModule.forRoot({
-    //   rootPath: './public',
-    // }),
+
   ],
   controllers: [AppController],
   providers: [AppService],
