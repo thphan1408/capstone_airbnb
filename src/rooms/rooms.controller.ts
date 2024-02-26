@@ -29,6 +29,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import fileUploadRoomDto from './dto/fileUploadRoom.dto';
 import { query } from 'express';
+import { UseImageUploadInterceptor } from 'src/utils/uploadFile';
 
 @ApiTags('Rooms')
 @Controller('api')
@@ -109,17 +110,8 @@ export class RoomsController {
   @ApiBody({ type: fileUploadRoomDto })
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
-  @UseInterceptors(
-    FileInterceptor('file', {
-      storage: diskStorage({
-        destination: process.cwd() + '/public/images/rooms',
-        filename: (req, file, cb) => {
-          return cb(null, new Date().getTime() + `${file.originalname}`);
-        },
-      }),
-    }),
-  )
-  @ApiQuery({ name: 'id', required: true, type: String })
+  @UseImageUploadInterceptor(`${process.env.RELATIVE_UPLOAD_PATH}/rooms`)
+  @ApiQuery({ name: 'id', required: true, type: Number })
   async uploadImageRoom(
     @Query('id') id,
     @UploadedFile() file,

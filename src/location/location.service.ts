@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
-import { CreateRoomDto } from './dto/createRoom.dto';
+import { CreateLocationDto } from './dto/createLocation.dto';
+import { UpdateLocationDto } from './dto/updateLocation.dto';
 import { verify } from 'jsonwebtoken';
-import { UpdateRoomDto } from './dto/updateRoom.dto';
-import fileUploadRoomDto from './dto/fileUploadRoom.dto';
 import { FOLDERNAME } from 'src/constants';
 
 @Injectable()
-export class RoomsService {
+export class LocationService {
   prisma = new PrismaClient();
-  async getListRooms(
+
+  async getListLocation(
     page: string | undefined,
     size: string | undefined,
     keyword: string,
@@ -37,13 +37,13 @@ export class RoomsService {
       const offset =
         numPage !== undefined ? (numPage - 1) * numSize! : undefined;
 
-      const data = await this.prisma.phong.findMany({
+      const data = await this.prisma.viTri.findMany({
         skip: offset,
         take: numSize,
         where: {
           OR: [
             {
-              ten_phong: {
+              ten_vi_tri: {
                 contains: keyword,
               },
             },
@@ -66,56 +66,24 @@ export class RoomsService {
     }
   }
 
-  async createRoom(body: CreateRoomDto): Promise<any> {
+  async createLocation(body: CreateLocationDto): Promise<any> {
     try {
-      const {
-        ten_phong,
-        khach,
-        phong_ngu,
-        giuong,
-        phong_tam,
-        gia_tien,
-        mo_ta,
-        may_giat,
-        ban_ui,
-        tivi,
-        dieu_hoa,
-        wifi,
-        bep,
-        do_xe,
-        ho_boi,
-        hinh_anh,
-        ma_vi_tri,
-      } = body;
-
+      const { ten_vi_tri, tinh_thanh, quoc_gia, hinh_anh } = body;
       const data = {
-        ten_phong: ten_phong,
-        khach: khach,
-        phong_ngu: phong_ngu,
-        giuong: giuong,
-        phong_tam: phong_tam,
-        gia_tien: gia_tien,
-        mo_ta: mo_ta,
-        may_giat: may_giat,
-        ban_ui: ban_ui,
-        tivi: tivi,
-        dieu_hoa: dieu_hoa,
-        wifi: wifi,
-        bep: bep,
-        do_xe: do_xe,
-        ho_boi: ho_boi,
+        ten_vi_tri: ten_vi_tri,
+        tinh_thanh: tinh_thanh,
+        quoc_gia: quoc_gia,
         hinh_anh: hinh_anh,
-        ma_vi_tri: ma_vi_tri,
       };
 
-      await this.prisma.phong.create({
+      await this.prisma.viTri.create({
         data: data,
       });
 
       return {
         status: 201,
         content: 'Created',
-        message: 'Create room success',
+        message: 'Create location success',
       };
     } catch (error) {
       return {
@@ -126,26 +94,31 @@ export class RoomsService {
     }
   }
 
-  async getRoomByLocation(ma_vi_tri: string): Promise<any> {
+  async getLocationById(id: string): Promise<any> {
     try {
-      const data = await this.prisma.phong.findMany({
+      const numId = Number(id);
+      if (isNaN(numId)) {
+        throw new Error('Invalid value for id');
+      }
+
+      const data = await this.prisma.viTri.findFirst({
         where: {
-          ma_vi_tri: +ma_vi_tri,
+          id_vi_tri: numId,
         },
       });
 
-      if (data.length === 0) {
+      if (data === null) {
         return {
           status: 404,
           content: 'Not Found',
-          message: 'Location id not found',
+          message: 'Location not found',
         };
       }
 
       return {
         status: 200,
         content: 'Success',
-        message: 'Get room by location success',
+        message: 'Get location success',
         data: data,
       };
     } catch (error) {
@@ -157,91 +130,17 @@ export class RoomsService {
     }
   }
 
-  async getRoomById(id: string): Promise<any> {
-    try {
-      const data = await this.prisma.phong.findUnique({
-        where: {
-          id_phong: +id,
-        },
-      });
-
-      if (!data) {
-        return {
-          status: 404,
-          content: 'Not Found',
-          message: 'Room not found',
-        };
-      }
-
-      return {
-        status: 200,
-        content: 'Success',
-        message: 'Get room by id success',
-        data: data,
-      };
-    } catch (error) {
-      return {
-        status: 500,
-        content: 'Internal Server Error',
-        message: error,
-      };
-    }
-  }
-
-  async deleteRoomById(token: string, id: string): Promise<any> {
-    try {
-      const tokenDecode = verify(token, process.env.SECRET_KEY) as {
-        role: string;
-      };
-
-      if (tokenDecode.role.toLowerCase() !== 'admin') {
-        return {
-          status: 403,
-          content: 'Forbidden',
-          message: 'You cannot delete this room',
-        };
-      }
-
-      const data = await this.prisma.phong.findFirst({
-        where: {
-          id_phong: +id,
-        },
-      });
-
-      if (!data) {
-        return {
-          status: 404,
-          content: 'Not Found',
-          message: 'Room not found',
-        };
-      }
-
-      await this.prisma.phong.delete({
-        where: {
-          id_phong: +id,
-        },
-      });
-
-      return {
-        status: 200,
-        content: 'Success',
-        message: 'Delete room success',
-      };
-    } catch (error) {
-      return {
-        status: 500,
-        content: 'Internal Server Error',
-        message: error,
-      };
-    }
-  }
-
-  async updateRoom(
-    token: string,
+  async updateLocation(
     id: string,
-    body: UpdateRoomDto,
+    body: UpdateLocationDto,
+    token: string,
   ): Promise<any> {
     try {
+      const numId = Number(id);
+      if (isNaN(numId)) {
+        throw new Error('Invalid value for id');
+      }
+
       const tokenDecode = verify(token, process.env.SECRET_KEY) as {
         role: string;
       };
@@ -250,33 +149,13 @@ export class RoomsService {
         return {
           status: 403,
           content: 'Forbidden',
-          message: 'You cannot update this room',
+          message: 'You do not have permission to access this resource',
         };
       }
 
-      const {
-        ten_phong,
-        khach,
-        phong_ngu,
-        giuong,
-        phong_tam,
-        gia_tien,
-        mo_ta,
-        may_giat,
-        ban_ui,
-        tivi,
-        dieu_hoa,
-        wifi,
-        bep,
-        do_xe,
-        ho_boi,
-        hinh_anh,
-        ma_vi_tri,
-      } = body;
-
-      const data = await this.prisma.phong.findFirst({
+      const data = await this.prisma.viTri.findFirst({
         where: {
-          id_phong: +id,
+          id_vi_tri: numId,
         },
       });
 
@@ -284,76 +163,22 @@ export class RoomsService {
         return {
           status: 404,
           content: 'Not Found',
-          message: 'Room not found',
+          message: 'Location not found',
         };
       }
 
-      const dataUpdate = {
-        ten_phong,
-        khach,
-        phong_ngu,
-        giuong,
-        phong_tam,
-        gia_tien,
-        mo_ta,
-        may_giat,
-        ban_ui,
-        tivi,
-        dieu_hoa,
-        wifi,
-        bep,
-        do_xe,
-        ho_boi,
-        hinh_anh,
-        ma_vi_tri,
-      };
-
-      await this.prisma.phong.update({
-        where: {
-          id_phong: +id,
-        },
-        data: dataUpdate,
-      });
-
-      return {
-        status: 200,
-        content: 'Success',
-        message: 'Update room success',
-      };
-    } catch (error) {
-      return {
-        status: 500,
-        content: 'Internal Server Error',
-        message: error,
-      };
-    }
-  }
-
-  async uploadImageRoom(id: string, file: any): Promise<any> {
-    try {
-      const data = await this.prisma.phong.findFirst({
-        where: {
-          id_phong: +id,
-        },
-      });
-
-      if (!data) {
-        return {
-          status: 404,
-          content: 'Not Found',
-          message: 'Room not found',
-        };
-      }
-
-      const relativePath = `${process.env.RELATIVE_UPLOAD_PATH}/${FOLDERNAME.ROOMS}`;
+      const { ten_vi_tri, tinh_thanh, quoc_gia, hinh_anh } = body;
 
       const newData = {
-        hinh_anh: `${relativePath}/${file.filename}`,
+        ten_vi_tri: ten_vi_tri,
+        tinh_thanh: tinh_thanh,
+        quoc_gia: quoc_gia,
+        hinh_anh: hinh_anh,
       };
 
-      await this.prisma.phong.update({
+      await this.prisma.viTri.update({
         where: {
-          id_phong: +id,
+          id_vi_tri: numId,
         },
         data: newData,
       });
@@ -361,7 +186,108 @@ export class RoomsService {
       return {
         status: 200,
         content: 'Success',
-        message: 'Upload image room success',
+        message: 'Update location success',
+      };
+    } catch (error) {
+      return {
+        status: 500,
+        content: 'Internal Server Error',
+        message: error,
+      };
+    }
+  }
+
+  async deleteLocationById(id: string, token: string): Promise<any> {
+    try {
+      const tokenDecode = verify(token, process.env.SECRET_KEY) as {
+        role: string;
+      };
+
+      if (tokenDecode.role.toLowerCase() !== 'admin') {
+        return {
+          status: 403,
+          content: 'Forbidden',
+          message: 'You cannot delete this location',
+        };
+      }
+
+      const numId = Number(id);
+      if (isNaN(numId)) {
+        throw new Error('Invalid value for id');
+      }
+
+      const data = await this.prisma.viTri.findFirst({
+        where: {
+          id_vi_tri: numId,
+        },
+      });
+
+      if (!data) {
+        return {
+          status: 404,
+          content: 'Not Found',
+          message: 'Location not found',
+        };
+      }
+
+      await this.prisma.viTri.delete({
+        where: {
+          id_vi_tri: numId,
+        },
+      });
+
+      return {
+        status: 200,
+        content: 'Success',
+        message: 'Delete location success',
+      };
+    } catch (error) {
+      return {
+        status: 500,
+        content: 'Internal Server Error',
+        message: error,
+      };
+    }
+  }
+
+  async uploadImageLocation(id: string, file: any): Promise<any> {
+    try {
+      const numId = Number(id);
+      if (isNaN(numId)) {
+        throw new Error('Invalid value for id');
+      }
+
+      const data = await this.prisma.viTri.findFirst({
+        where: {
+          id_vi_tri: numId,
+        },
+      });
+
+      if (!data) {
+        return {
+          status: 404,
+          content: 'Not Found',
+          message: 'Location not found',
+        };
+      }
+
+      const relativePath = `${process.env.RELATIVE_UPLOAD_PATH}/${FOLDERNAME.LOCATION}`;
+
+      const newData = {
+        hinh_anh: `${relativePath}/${file.filename}`,
+      };
+
+      await this.prisma.viTri.update({
+        where: {
+          id_vi_tri: numId,
+        },
+        data: newData,
+      });
+
+      return {
+        status: 200,
+        content: 'Success',
+        message: 'Upload image location success',
       };
     } catch (error) {
       return {

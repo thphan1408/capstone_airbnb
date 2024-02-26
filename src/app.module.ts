@@ -6,6 +6,7 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { RoomsModule } from './rooms/rooms.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
+import { LocationModule } from './location/location.module';
 
 @Module({
   imports: [
@@ -15,10 +16,10 @@ import { ServeStaticModule } from '@nestjs/serve-static';
       isGlobal: true,
     }),
     ServeStaticModule.forRoot({
-      rootPath: "./public",
+      rootPath: './public',
     }),
     RoomsModule,
-
+    LocationModule,
   ],
   controllers: [AppController],
   providers: [AppService],
