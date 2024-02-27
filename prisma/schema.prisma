@@ -10,7 +10,7 @@ datasource db {
 model BinhLuan {
   id_binh_luan       Int        @id @default(autoincrement())
   noi_dung           String?    @db.VarChar(250)
-  ngay_binh_luan     DateTime?  @db.Date
+  ngay_binh_luan     String?    @db.VarChar(250)
   sao_binh_luan      Int?
   ma_nguoi_binh_luan Int?
   ma_phong           Int?
@@ -23,8 +23,8 @@ model BinhLuan {
 
 model DatPhong {
   id_dat_phong   Int        @id @default(autoincrement())
-  ngay_den       DateTime?  @db.Date
-  ngay_di        DateTime?  @db.Date
+  ngay_den       String?    @db.VarChar(250)
+  ngay_di        String?    @db.VarChar(250)
   so_luong_khach Int?
   ma_phong       Int?
   ma_nguoi_dat   Int?
