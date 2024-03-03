@@ -1,21 +1,24 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsDate } from 'class-validator';
-export class CreateCommentDto {
+
+export class UpdateReserveARoomDto {
   @ApiProperty()
-  noi_dung: string;
+  ma_phong: number;
 
   @ApiProperty()
   @IsDate()
   @Type(() => Date)
-  ngay_binh_luan: Date;
+  ngay_den: Date;
 
   @ApiProperty()
-  sao_binh_luan: number;
+  @IsDate()
+  @Type(() => Date)
+  ngay_di: Date;
 
   @ApiProperty()
-  ma_nguoi_binh_luan: number;
+  so_luong_khach: number;
 
   @ApiProperty()
-  ma_phong: number;
+  ma_nguoi_dat: number;
 }

@@ -57,7 +57,7 @@ export class CommentService {
 
       const newData = {
         noi_dung,
-        ngay_binh_luan,
+        ngay_binh_luan: new Date(ngay_binh_luan),
         sao_binh_luan,
         ma_nguoi_binh_luan,
         ma_phong,
@@ -91,17 +91,18 @@ export class CommentService {
         ma_phong,
       } = body;
 
-      const checkRoom = await this.prisma.phong.findFirst({
-        where: {
-          id_phong: ma_phong,
-        },
-      });
-
-      const checkUser = await this.prisma.nguoiDung.findFirst({
-        where: {
-          id_nguoi_dung: ma_nguoi_binh_luan,
-        },
-      });
+      const [checkRoom, checkUser] = await Promise.all([
+        this.prisma.phong.findFirst({
+          where: {
+            id_phong: ma_phong,
+          },
+        }),
+        this.prisma.nguoiDung.findFirst({
+          where: {
+            id_nguoi_dung: ma_nguoi_binh_luan,
+          },
+        }),
+      ]);
 
       if (!checkRoom || !checkUser) {
         return {
@@ -112,11 +113,11 @@ export class CommentService {
       }
 
       const newData = {
-        noi_dung: noi_dung,
-        ngay_binh_luan: ngay_binh_luan,
-        sao_binh_luan: sao_binh_luan,
-        ma_nguoi_binh_luan: ma_nguoi_binh_luan,
-        ma_phong: ma_phong,
+        noi_dung,
+        ngay_binh_luan: new Date(ngay_binh_luan),
+        sao_binh_luan,
+        ma_nguoi_binh_luan,
+        ma_phong,
       };
 
       await this.prisma.binhLuan.update({

@@ -28,7 +28,6 @@ import { UpdateRoomDto } from './dto/updateRoom.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import fileUploadRoomDto from './dto/fileUploadRoom.dto';
-import { query } from 'express';
 import { UseImageUploadInterceptor } from 'src/utils/uploadFile';
 
 @ApiTags('Rooms')
