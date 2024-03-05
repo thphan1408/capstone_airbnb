@@ -1,10 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty } from 'class-validator';
-
+import { Type } from 'class-transformer';
+import { IsDate, IsEmail, IsNotEmpty } from 'class-validator';
+import { format, parseISO } from 'date-fns';
 export default class CreateUserDto {
   @ApiProperty()
   name: string;
-  
+
   @ApiProperty()
   @IsEmail({})
   email: string;
@@ -17,7 +18,9 @@ export default class CreateUserDto {
   phone: string;
 
   @ApiProperty()
-  birth_day: string;
+  @IsDate()
+  @Type(() => Date)
+  birth_day: Date;
 
   @ApiProperty()
   gender: string;
@@ -25,4 +28,14 @@ export default class CreateUserDto {
   @ApiProperty()
   role: string;
 
+  // constructor(partial: Partial<CreateUserDto>) {
+  //   Object.assign(this, partial);
+  //   this.formatDateOfBirthday();
+  // }
+
+  // private formatDateOfBirthday() {
+  //   if (typeof this.birth_day === 'string') {
+  //     this.birth_day = parseISO(this.birth_day);
+  //   }
+  // }
 }

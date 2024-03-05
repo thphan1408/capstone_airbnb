@@ -250,7 +250,7 @@ export class LocationService {
     }
   }
 
-  async uploadImageLocation(id: string, file: any): Promise<any> {
+  async uploadImageLocation(id: string, imageUrl: any): Promise<any> {
     try {
       const numId = Number(id);
       if (isNaN(numId)) {
@@ -271,10 +271,14 @@ export class LocationService {
         };
       }
 
-      const relativePath = `${process.env.RELATIVE_UPLOAD_PATH}/${FOLDERNAME.LOCATION}`;
+      // const relativePath = `${process.env.RELATIVE_UPLOAD_PATH}/${FOLDERNAME.LOCATION}`;
+
+      // const newData = {
+      //   hinh_anh: `${relativePath}/${file.filename}`,
+      // };
 
       const newData = {
-        hinh_anh: `${relativePath}/${file.filename}`,
+        hinh_anh: imageUrl.secure_url,
       };
 
       await this.prisma.viTri.update({

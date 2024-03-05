@@ -11,6 +11,7 @@ import {
   Put,
   Delete,
   UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { LocationService } from './location.service';
 import {
@@ -26,11 +27,16 @@ import { AuthGuard } from '@nestjs/passport';
 import { UpdateLocationDto } from './dto/updateLocation.dto';
 import { UseImageUploadInterceptor } from 'src/utils/uploadFile';
 import fileUploadLocationDto from './dto/fileUploadLocation.dto';
+import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('Location')
 @Controller('api')
 export class LocationController {
-  constructor(private readonly locationService: LocationService) {}
+  constructor(
+    private readonly locationService: LocationService,
+    private cloudinaryService: CloudinaryService,
+  ) {}
 
   @Get('location')
   @ApiQuery({ name: 'page', required: false, type: Number })
@@ -99,19 +105,47 @@ export class LocationController {
     response.status(data.status).json(data);
   }
 
+  // @Post('/location/upload-image-location')
+  // @ApiConsumes('multipart/form-data')
+  // @ApiBody({ type: fileUploadLocationDto })
+  // @ApiQuery({ name: 'id', required: true, type: Number })
+  // @ApiBearerAuth()
+  // @UseGuards(AuthGuard('jwt'))
+  // @UseImageUploadInterceptor(`${process.env.RELATIVE_UPLOAD_PATH}/locations`)
+  // async uploadImageLocation(
+  //   @Query('id') id,
+  //   @UploadedFile() file,
+  //   @Res() response,
+  // ): Promise<any> {
+  //   const data = await this.locationService.uploadImageLocation(id, file);
+  //   response.status(data.status).json(data);
+  // }
+
   @Post('/location/upload-image-location')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: fileUploadLocationDto })
   @ApiQuery({ name: 'id', required: true, type: Number })
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
-  @UseImageUploadInterceptor(`${process.env.RELATIVE_UPLOAD_PATH}/locations`)
+  @UseInterceptors(FileInterceptor('file'))
   async uploadImageLocation(
     @Query('id') id,
-    @UploadedFile() file,
+    @UploadedFile('file') file: Express.Multer.File,
     @Res() response,
   ): Promise<any> {
-    const data = await this.locationService.uploadImageLocation(id, file);
-    response.status(data.status).json(data);
+    try {
+      const imageUrl = await this.cloudinaryService.uploadImage(
+        file,
+        'Airbnb-clone/locations',
+      );
+      const data = await this.locationService.uploadImageLocation(id, imageUrl);
+      response.status(data.status).json(data);
+    } catch (error) {
+      response.status(500).json({
+        status: 500,
+        content: 'Internal Server Error',
+        message: error,
+      });
+    }
   }
 }

@@ -5,7 +5,6 @@ import CreateUserDto from './dto/createUser.dto';
 import * as bcrypt from 'bcrypt';
 import UpdateUserDto from './dto/updateUser.dto';
 import { initAvatar } from 'src/utils/initAvatar';
-
 @Injectable()
 export class UsersService {
   prisma = new PrismaClient();
@@ -63,7 +62,7 @@ export class UsersService {
           email: email,
           pass_word: endcodePassword,
           phone: phone,
-          birth_day: birth_day,
+          birth_day: new Date(birth_day),
           gender: gender,
           role: role,
           avatar: newAvatar,
@@ -275,7 +274,7 @@ export class UsersService {
         email: email,
         pass_word: endcodePassword,
         phone: phone,
-        birth_day: birth_day,
+        birth_day: new Date(birth_day),
         gender: gender,
         role: role,
         avatar: avatar,
@@ -300,14 +299,32 @@ export class UsersService {
     }
   }
 
-  // async uploadAvatar(file: any): Promise<any> {
-  //   try {
-  //   } catch (error) {
-  //     return {
-  //       status: 500,
-  //       content: 'Internal Server Error',
-  //       message: error,
-  //     };
-  //   }
-  // }
+  async uploadAvatar(imageUrl: any, token: string): Promise<any> {
+    try {
+      const decodeToken = verify(token, process.env.SECRET_KEY) as {
+        id: number;
+      };
+
+      await this.prisma.nguoiDung.update({
+        where: {
+          id_nguoi_dung: decodeToken.id,
+        },
+        data: {
+          avatar: imageUrl.secure_url,
+        },
+      });
+
+      return {
+        status: 200,
+        content: 'Success',
+        message: 'upload avatar success',
+      };
+    } catch (error) {
+      return {
+        status: 500,
+        content: 'Internal Server Error',
+        message: error,
+      };
+    }
+  }
 }

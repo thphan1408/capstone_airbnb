@@ -62,30 +62,24 @@ CREATE TABLE ViTri(
     hinh_anh VARCHAR(250)
 ) 
 
---- Xóa phòng với người dùng và đặt phòng, bình luận để create lại data
-DROP TABLE NguoiDung
-DROP TABLE Phong
-DROP TABLE DatPhong
-DROP TABLE BinhLuan
-
-
 --- Thêm data NguoiDung
 INSERT INTO NguoiDung (name, email, pass_word, phone, birth_day, gender, role, avatar) VALUES
-('John Doe', 'john@example.com', 'password123', '123456789', '1990-01-01', 'Male', 'User', 'avatar1.jpg'),
-('Jane Smith', 'jane@example.com', 'password456', '987654321', '1991-02-02', 'Female', 'User', 'avatar2.jpg'),
-('Michael Johnson', 'michael@example.com', 'password789', '555555555', '1992-03-03', 'Male', 'Admin', 'avatar3.jpg'),
-('Emily Brown', 'emily@example.com', 'passwordabc', '444444444', '1993-04-04', 'Female', 'User', 'avatar4.jpg'),
-('William Taylor', 'william@example.com', 'passworddef', '777777777', '1994-05-05', 'Male', 'User', 'avatar5.jpg'),
-('Olivia Martinez', 'olivia@example.com', 'passwordghi', '222222222', '1995-06-06', 'Female', 'User', 'avatar6.jpg'),
-('James Wilson', 'james@example.com', 'passwordjkl', '333333333', '1996-07-07', 'Male', 'User', 'avatar7.jpg'),
-('Emma Anderson', 'emma@example.com', 'passwordmno', '666666666', '1997-08-08', 'Female', 'Admin', 'avatar8.jpg'),
-('Alexander Thomas', 'alexander@example.com', 'passwordpqr', '999999999', '1998-09-09', 'Male', 'User', 'avatar9.jpg'),
-('Sophia Jackson', 'sophia@example.com', 'passwordstu', '111111111', '1999-10-10', 'Female', 'User', 'avatar10.jpg'),
-('Matthew White', 'matthew@example.com', 'passwordvwx', '222222222', '2000-11-11', 'Male', 'User', 'avatar11.jpg'),
-('Ava Harris', 'ava@example.com', 'passwordyz', '333333333', '2001-12-12', 'Female', 'User', 'avatar12.jpg'),
-('Ethan Martin', 'ethan@example.com', 'password123', '444444444', '2002-01-01', 'Male', 'User', 'avatar13.jpg'),
-('Mia Thompson', 'mia@example.com', 'password456', '555555555', '2003-02-02', 'Female', 'User', 'avatar14.jpg'),
-('Daniel Garcia', 'daniel@example.com', 'password789', '666666666', '2004-03-03', 'Male', 'User', 'avatar15.jpg');
+('Nguyễn Văn A', 'nguyenvana@example.com', 'password1', '0987654321', '1990-05-15', 'Nam', 'User', 'avatar1.jpg'),
+('Trần Thị B', 'tranthib@example.com', 'password2', '0123456789', '1985-08-20', 'Nữ', 'User', 'avatar2.jpg'),
+('Lê Văn C', 'levanc@example.com', 'password3', '0369841752', '1992-12-10', 'Nam', 'User', 'avatar3.jpg'),
+('Phạm Thị D', 'phamthid@example.com', 'password4', '0912345678', '1988-03-25', 'Nữ', 'User', 'avatar4.jpg'),
+('Hoàng Văn E', 'hoangvane@example.com', 'password5', '0567891234', '1995-07-30', 'Nam', 'User', 'avatar5.jpg'),
+('Nguyễn Thị F', 'nguyenthif@example.com', 'password6', '0345678912', '1993-10-05', 'Nữ', 'User', 'avatar6.jpg'),
+('Trần Văn G', 'tranvang@example.com', 'password7', '0789456123', '1987-02-18', 'Nam', 'User', 'avatar7.jpg'),
+('Lê Thị H', 'lethih@example.com', 'password8', '0991234567', '1991-06-20', 'Nữ', 'User', 'avatar8.jpg'),
+('Phan Văn I', 'phanvani@example.com', 'password9', '0678912345', '1989-09-12', 'Nam', 'User', 'avatar9.jpg'),
+('Vũ Thị K', 'vuthik@example.com', 'password10', '0555555555', '1994-11-28', 'Nữ', 'User', 'avatar10.jpg'),
+('Đặng Văn L', 'dangvanl@example.com', 'password11', '0333333333', '1996-04-10', 'Nam', 'User', 'avatar11.jpg'),
+('Bùi Thị M', 'buithim@example.com', 'password12', '0444444444', '1986-01-05', 'Nữ', 'User', 'avatar12.jpg'),
+('Lý Văn N', 'lyvann@example.com', 'password13', '0575757575', '1990-08-15', 'Nam', 'User', 'avatar13.jpg'),
+('Hồ Thị O', 'hothio@example.com', 'password14', '0888888888', '1984-12-20', 'Nữ', 'User', 'avatar14.jpg'),
+('Đoàn Văn P', 'doanvanp@example.com', 'password15', '0777777777', '1997-03-28', 'Nam', 'User', 'avatar15.jpg');
+
 
 --- Thêm data ViTri
 INSERT INTO ViTri (ten_vi_tri, tinh_thanh, quoc_gia, hinh_anh) VALUES
@@ -163,3 +157,8 @@ VALUES
     ('Dịch vụ tốt, nhân viên thân thiện', '2024-03-08', 4, 14, 14),
     ('Giá cả phù hợp, phòng ốc sạch sẽ', '2024-03-10', 4, 15, 15);
 
+SELECT
+Date_format(birth_day, '%d/%m/%Y') as birth_day
+FROM NguoiDung
+
+SELECT * from NguoiDung

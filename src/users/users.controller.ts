@@ -8,7 +8,6 @@ import {
   Put,
   Query,
   Req,
-  Request,
   Res,
   UploadedFile,
   UseGuards,
@@ -19,7 +18,6 @@ import {
   ApiBearerAuth,
   ApiBody,
   ApiConsumes,
-  ApiHeader,
   ApiParam,
   ApiQuery,
   ApiTags,
@@ -112,7 +110,25 @@ export class UsersController {
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: FileUploadDto })
   @UseInterceptors(FileInterceptor('file'))
-  uploadAvatar(@UploadedFile('file') file: Express.Multer.File) {
-    return this.cloudinaryService.uploadImage(file);
+  async uploadAvatar(
+    @UploadedFile('file') file: Express.Multer.File,
+    @Res() response,
+    @Req() request,
+  ): Promise<any> {
+    try {
+      const imageUrl = await this.cloudinaryService.uploadImage(
+        file,
+        'Airbnb-clone/avatar',
+      );
+      const token = request.headers.authorization.split(' ')[1];
+      const data = await this.usersService.uploadAvatar(imageUrl, token);
+      response.status(data.status).json(data);
+    } catch (error) {
+      response.status(500).json({
+        status: 500,
+        content: 'Internal Server Error',
+        message: error,
+      });
+    }
   }
 }
