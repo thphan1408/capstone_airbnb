@@ -3,7 +3,6 @@ import { PrismaClient } from '@prisma/client';
 import { CreateRoomDto } from './dto/createRoom.dto';
 import { verify } from 'jsonwebtoken';
 import { UpdateRoomDto } from './dto/updateRoom.dto';
-import fileUploadRoomDto from './dto/fileUploadRoom.dto';
 import { FOLDERNAME } from 'src/constants';
 
 @Injectable()
@@ -329,7 +328,7 @@ export class RoomsService {
     }
   }
 
-  async uploadImageRoom(id: string, file: any): Promise<any> {
+  async uploadImageRoom(id: string, imageUrl: any): Promise<any> {
     try {
       const data = await this.prisma.phong.findFirst({
         where: {
@@ -345,17 +344,15 @@ export class RoomsService {
         };
       }
 
-      const relativePath = `${process.env.RELATIVE_UPLOAD_PATH}/${FOLDERNAME.ROOMS}`;
-
-      const newData = {
-        hinh_anh: `${relativePath}/${file.filename}`,
+      const dataUpdate = {
+        hinh_anh: imageUrl.secure_url,
       };
 
       await this.prisma.phong.update({
         where: {
           id_phong: +id,
         },
-        data: newData,
+        data: dataUpdate,
       });
 
       return {
@@ -371,4 +368,46 @@ export class RoomsService {
       };
     }
   }
+
+  // async uploadImagesRoom(id: string, imageUrl: any): Promise<any> {
+  //   try {
+  //     const data = await this.prisma.phong.findFirst({
+  //       where: {
+  //         id_phong: +id,
+  //       },
+  //     });
+
+  //     if (!data) {
+  //       return {
+  //         status: 404,
+  //         content: 'Not Found',
+  //         message: 'Room not found',
+  //       };
+  //     }
+
+  //     const dataUpdate = {
+  //       hinh_anh: imageUrl.map((item: any) => item.secure_url),
+  //     };
+  //     console.log('dataUpdate:', dataUpdate.hinh_anh);
+
+  //     // await this.prisma.phong.update({
+  //     //   where: {
+  //     //     id_phong: +id,
+  //     //   },
+  //     //   data: dataUpdate,
+  //     // });
+
+  //     return {
+  //       status: 200,
+  //       content: 'Success',
+  //       message: 'Upload images room success',
+  //     };
+  //   } catch (error) {
+  //     return {
+  //       status: 500,
+  //       content: 'Internal Server Error',
+  //       message: error,
+  //     };
+  //   }
+  // }
 }

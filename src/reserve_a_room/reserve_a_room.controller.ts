@@ -53,8 +53,8 @@ export class ReserveARoomController {
   }
 
   @Put('/reserve-a-room/:id')
-  // @ApiBearerAuth()
-  // @UseGuards(AuthGuard('jwt'))
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   @ApiParam({ name: 'id', type: Number })
   @ApiBody({ type: UpdateReserveARoomDto })
   async updateReserveARoom(

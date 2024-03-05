@@ -10,8 +10,8 @@ async function bootstrap() {
   // define swagger document
   const config = new DocumentBuilder()
     .addBearerAuth()
-    .setTitle('Final Project')
-    .setDescription('The Final Project API for airbnb')
+    .setTitle('Final Project Airbnb API')
+    .setDescription('Designed for Airbnb Clone Project')
     .setVersion('1.0')
     .build();
 

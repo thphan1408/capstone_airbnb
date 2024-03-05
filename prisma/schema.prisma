@@ -41,7 +41,7 @@ model NguoiDung {
   email         String?    @db.VarChar(250)
   pass_word     String?    @db.VarChar(250)
   phone         String?    @db.VarChar(250)
-  birth_day     String?    @db.VarChar(250)
+  birth_day     DateTime?  @db.Date
   gender        String?    @db.VarChar(250)
   role          String?    @db.VarChar(250)
   avatar        String?    @db.VarChar(255)
@@ -56,7 +56,7 @@ model Phong {
   phong_ngu Int?
   giuong    Int?
   phong_tam Int?
-  gia_tien  Int?
+  gia_tien  Float?     @db.Float
   mo_ta     String?    @db.VarChar(250)
   may_giat  Boolean?
   ban_ui    Boolean?

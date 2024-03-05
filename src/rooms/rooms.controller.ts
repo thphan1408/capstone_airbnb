@@ -27,13 +27,17 @@ import { AuthGuard } from '@nestjs/passport';
 import { UpdateRoomDto } from './dto/updateRoom.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import fileUploadRoomDto from './dto/fileUploadRoom.dto';
+import { fileUploadRoomDto } from './dto/fileUploadRoom.dto';
 import { UseImageUploadInterceptor } from 'src/utils/uploadFile';
+import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 
 @ApiTags('Rooms')
 @Controller('api')
 export class RoomsController {
-  constructor(private readonly roomsService: RoomsService) {}
+  constructor(
+    private readonly roomsService: RoomsService,
+    private cloudinaryService: CloudinaryService,
+  ) {}
 
   @Get('/phong-thue')
   @ApiQuery({ name: 'page', required: false, type: Number })
@@ -104,19 +108,77 @@ export class RoomsController {
     response.status(data.status).json(data);
   }
 
+  // Multer upload file
+  // @Post('/phong-thue/upload-hinh-phong')
+  // @ApiConsumes('multipart/form-data')
+  // @ApiBody({ type: fileUploadRoomDto })
+  // @ApiBearerAuth()
+  // @UseGuards(AuthGuard('jwt'))
+  // @UseImageUploadInterceptor(`${process.env.RELATIVE_UPLOAD_PATH}/rooms`)
+  // @ApiQuery({ name: 'id', required: true, type: Number }
+  // async uploadImageRoom(
+  //   @Query('id') id,
+  //   @UploadedFile() file,
+  //   @Res() response,
+  // ): Promise<any> {
+  //   const data = await this.roomsService.uploadImageRoom(id, file);
+  //   response.status(data.status).json(data);
+  // }
+
   @Post('/phong-thue/upload-hinh-phong')
-  @ApiConsumes('multipart/form-data')
-  @ApiBody({ type: fileUploadRoomDto })
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
-  @UseImageUploadInterceptor(`${process.env.RELATIVE_UPLOAD_PATH}/rooms`)
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({ type: fileUploadRoomDto })
   @ApiQuery({ name: 'id', required: true, type: Number })
+  @UseInterceptors(FileInterceptor('file'))
   async uploadImageRoom(
-    @Query('id') id,
-    @UploadedFile() file,
+    @UploadedFile('file') file: Express.Multer.File,
     @Res() response,
+    @Query('id') id,
   ): Promise<any> {
-    const data = await this.roomsService.uploadImageRoom(id, file);
-    response.status(data.status).json(data);
+    try {
+      const imageUrl = await this.cloudinaryService.uploadImage(
+        file,
+        'Airbnb-clone/rooms',
+      );
+      const data = await this.roomsService.uploadImageRoom(id, imageUrl);
+      response.status(data.status).json(data);
+    } catch (error) {
+      response.status(500).json({
+        status: 500,
+        content: 'Internal Server Error',
+        message: error,
+      });
+    }
   }
+
+  // upload nhiều file lên cloudinary
+  // @Post('/phong-thue/upload-hinh-phong')
+  // @ApiBearerAuth()
+  // @UseGuards(AuthGuard('jwt'))
+  // @ApiConsumes('multipart/form-data')
+  // @ApiBody({ type: fileUploadRoomDto })
+  // @ApiQuery({ name: 'id', required: true, type: Number })
+  // @UseInterceptors(FileInterceptor('files'))
+  // async uploadImagesRoom(
+  //   @UploadedFile() files: Express.Multer.File[],
+  //   @Res() response,
+  //   @Query('id') id,
+  // ): Promise<any> {
+  //   try {
+  //     const imageUrl = await this.cloudinaryService.uploadImages(
+  //       files,
+  //       'Airbnb-clone/rooms',
+  //     );
+  //     const data = await this.roomsService.uploadImagesRoom(id, imageUrl);
+  //     response.status(data.status).json(data);
+  //   } catch (error) {
+  //     response.status(500).json({
+  //       status: 500,
+  //       content: 'Internal Server Error',
+  //       message: error.message,
+  //     });
+  //   }
+  // }
 }
