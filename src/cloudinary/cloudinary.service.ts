@@ -45,6 +45,17 @@ export class CloudinaryService {
       const promises = files.map((file) => this.uploadImage(file, folder));
       return await Promise.all(promises);
     } catch (error) {
+      return new NotFoundException(error.message);
+    }
+  }
+
+  // Xóa file trên cloudinary
+  async deleteImage(public_id: string): Promise<any> {
+    console.log('public_id:', public_id);
+    try {
+      const result = await v2.uploader.destroy(public_id);
+      return result;
+    } catch (error) {
       throw new NotFoundException(error.message);
     }
   }

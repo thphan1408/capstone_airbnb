@@ -3,6 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpException,
+  HttpStatus,
   Param,
   Post,
   Put,
@@ -142,7 +144,12 @@ export class RoomsController {
         file,
         'Airbnb-clone/rooms',
       );
+
       const data = await this.roomsService.uploadImageRoom(id, imageUrl);
+
+      if (data.status === 404) {
+        await this.cloudinaryService.deleteImage(imageUrl.public_id);
+      }
       response.status(data.status).json(data);
     } catch (error) {
       response.status(500).json({
