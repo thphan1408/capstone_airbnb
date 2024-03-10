@@ -50,14 +50,14 @@ model NguoiDung {
 }
 
 model Phong {
-  id_phong  Int        @id @default(autoincrement())
-  ten_phong String?    @db.VarChar(250)
+  id_phong  Int         @id @default(autoincrement())
+  ten_phong String?     @db.VarChar(250)
   khach     Int?
   phong_ngu Int?
   giuong    Int?
   phong_tam Int?
-  gia_tien  Float?     @db.Float
-  mo_ta     String?    @db.VarChar(250)
+  gia_tien  Float?      @db.Float
+  mo_ta     String?     @db.VarChar(250)
   may_giat  Boolean?
   ban_ui    Boolean?
   tivi      Boolean?
@@ -66,11 +66,11 @@ model Phong {
   bep       Boolean?
   do_xe     Boolean?
   ho_boi    Boolean?
-  hinh_anh  String?    @db.VarChar(250)
   ma_vi_tri Int?
   BinhLuan  BinhLuan[]
   DatPhong  DatPhong[]
-  ViTri     ViTri?     @relation(fields: [ma_vi_tri], references: [id_vi_tri], onDelete: Cascade, onUpdate: NoAction, map: "Phong_ibfk_1")
+  HinhPhong HinhPhong[]
+  ViTri     ViTri?      @relation(fields: [ma_vi_tri], references: [id_vi_tri], onDelete: Cascade, onUpdate: NoAction, map: "Phong_ibfk_1")
 
   @@index([ma_vi_tri], map: "ma_vi_tri")
 }
@@ -82,4 +82,14 @@ model ViTri {
   quoc_gia   String? @db.VarChar(250)
   hinh_anh   String? @db.VarChar(250)
   Phong      Phong[]
+}
+
+model HinhPhong {
+  id_hinh   Int     @id @default(autoincrement())
+  public_id String? @db.Text
+  url_hinh  String? @db.Text
+  id_phong  Int?
+  Phong     Phong?  @relation(fields: [id_phong], references: [id_phong], onDelete: Cascade, onUpdate: NoAction, map: "HinhPhong_ibfk_1")
+
+  @@index([id_phong], map: "id_phong")
 }

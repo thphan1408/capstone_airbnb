@@ -122,6 +122,11 @@ export class UsersController {
       );
       const token = request.headers.authorization.split(' ')[1];
       const data = await this.usersService.uploadAvatar(imageUrl, token);
+
+      if (data.status === 404) {
+        await this.cloudinaryService.deleteImage(imageUrl.public_id);
+      }
+
       response.status(data.status).json(data);
     } catch (error) {
       response.status(500).json({
