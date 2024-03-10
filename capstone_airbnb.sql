@@ -27,7 +27,6 @@ CREATE TABLE Phong(
     bep BOOLEAN,
     do_xe BOOLEAN,
     ho_boi BOOLEAN,
-    hinh_anh VARCHAR(250),
     ma_vi_tri INT,
     FOREIGN KEY (ma_vi_tri) REFERENCES ViTri(id_vi_tri) ON DELETE CASCADE
 ) 
@@ -60,6 +59,14 @@ CREATE TABLE ViTri(
     tinh_thanh VARCHAR(250),
     quoc_gia VARCHAR(250),
     hinh_anh VARCHAR(250)
+) 
+
+CREATE TABLE HinhPhong(
+	id_hinh INT PRIMARY KEY AUTO_INCREMENT,
+	public_id TEXT,
+	url_hinh TEXT,
+	id_phong INT,
+	FOREIGN KEY (id_phong) REFERENCES Phong(id_phong) ON DELETE CASCADE
 ) 
 
 --- Thêm data NguoiDung
@@ -101,22 +108,22 @@ INSERT INTO ViTri (ten_vi_tri, tinh_thanh, quoc_gia, hinh_anh) VALUES
 
 
 --- Thêm data Phong
-INSERT INTO Phong (ten_phong, khach, phong_ngu, giuong, phong_tam, gia_tien, mo_ta, may_giat, ban_ui, tivi, dieu_hoa, wifi, bep, do_xe, ho_boi, hinh_anh, ma_vi_tri) VALUES
-('Phòng Deluxe', 2, 1, 1, 1, 1000000, 'Phòng sang trọng với view đẹp', TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, 'phong_deluxe.jpg', 1),
-('Studio Apartment', 1, 1, 1, 1, 800000, 'Phòng studio tiện nghi cho 1 người', TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, 'studio_apartment.jpg', 2),
-('Biệt thự riêng biệt', 6, 3, 3, 2, 3000000, 'Biệt thự sang trọng cho gia đình', TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, 'biet_thu.jpg', 3 ),
-('Phòng Superior', 2, 1, 1, 1, 1200000, 'Phòng tiêu chuẩn với giá phải chăng', TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, 'phong_superior.jpg', 4),
-('Penthouse Suite', 4, 2, 2, 2, 2500000, 'Suite tầng thượng với view đẹp', TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, 'penthouse_suite.jpg', 5),
-('Căn hộ cao cấp', 3, 2, 2, 1, 1800000, 'Căn hộ sang trọng cho gia đình nhỏ', TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, 'can_ho_cao_cap.jpg', 6),
-('Phòng Family', 4, 2, 2, 2, 1500000, 'Phòng rộng rãi cho gia đình', TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, 'phong_family.jpg', 7),
-('Suite Executive', 2, 1, 1, 1, 2000000, 'Suite cao cấp với dịch vụ VIP', TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, 'suite_executive.jpg', 8),
-('Biệt thự biển', 8, 4, 4, 3, 4000000, 'Biệt thự ngay bên bãi biển', TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, 'biet_thu_bien.jpg', 9),
-('Phòng Triple', 3, 2, 2, 1, 1400000, 'Phòng cho 3 người với giá hợp lý', TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, 'phong_triple.jpg', 10),
-('Phòng Đôi', 2, 1, 1, 1, 1000000, 'Phòng tiêu chuẩn cho cặp đôi', TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, 'phong_doi.jpg', 11),
-('Căn hộ dịch vụ', 4, 2, 2, 1, 2200000, 'Căn hộ với dịch vụ hoàn hảo', TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, 'can_ho_dich_vu.jpg', 12),
-('Phòng Quad', 4, 2, 2, 2, 1600000, 'Phòng tiện nghi cho 4 người', TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, 'phong_quad.jpg', 13),
-('Suite Deluxe', 2, 1, 1, 1, 1800000, 'Suite sang trọng với dịch vụ VIP', TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, 'suite_deluxe.jpg', 14),
-('Phòng Twin', 2, 1, 1, 1, 1200000, 'Phòng cho 2 người với giường Twin', TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, 'phong_twin.jpg', 15);
+INSERT INTO Phong (ten_phong, khach, phong_ngu, giuong, phong_tam, gia_tien, mo_ta, may_giat, ban_ui, tivi, dieu_hoa, wifi, bep, do_xe, ho_boi, ma_vi_tri) VALUES
+('Phòng Deluxe', 2, 1, 1, 1, 1000000, 'Phòng sang trọng với view đẹp', TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, 1),
+('Studio Apartment', 1, 1, 1, 1, 800000, 'Phòng studio tiện nghi cho 1 người', TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, 2),
+('Biệt thự riêng biệt', 6, 3, 3, 2, 3000000, 'Biệt thự sang trọng cho gia đình', TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, 3 ),
+('Phòng Superior', 2, 1, 1, 1, 1200000, 'Phòng tiêu chuẩn với giá phải chăng', TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, 4),
+('Penthouse Suite', 4, 2, 2, 2, 2500000, 'Suite tầng thượng với view đẹp', TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, 5),
+('Căn hộ cao cấp', 3, 2, 2, 1, 1800000, 'Căn hộ sang trọng cho gia đình nhỏ', TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, 6),
+('Phòng Family', 4, 2, 2, 2, 1500000, 'Phòng rộng rãi cho gia đình', TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, 7),
+('Suite Executive', 2, 1, 1, 1, 2000000, 'Suite cao cấp với dịch vụ VIP', TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, 8),
+('Biệt thự biển', 8, 4, 4, 3, 4000000, 'Biệt thự ngay bên bãi biển', TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, 9),
+('Phòng Triple', 3, 2, 2, 1, 1400000, 'Phòng cho 3 người với giá hợp lý', TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, 10),
+('Phòng Đôi', 2, 1, 1, 1, 1000000, 'Phòng tiêu chuẩn cho cặp đôi', TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, 11),
+('Căn hộ dịch vụ', 4, 2, 2, 1, 2200000, 'Căn hộ với dịch vụ hoàn hảo', TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, 12),
+('Phòng Quad', 4, 2, 2, 2, 1600000, 'Phòng tiện nghi cho 4 người', TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, 13),
+('Suite Deluxe', 2, 1, 1, 1, 1800000, 'Suite sang trọng với dịch vụ VIP', TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, 14),
+('Phòng Twin', 2, 1, 1, 1, 1200000, 'Phòng cho 2 người với giường Twin', TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, 15);
 
 
 --- Thêm data DatPhong
@@ -157,8 +164,3 @@ VALUES
     ('Dịch vụ tốt, nhân viên thân thiện', '2024-03-08', 4, 14, 14),
     ('Giá cả phù hợp, phòng ốc sạch sẽ', '2024-03-10', 4, 15, 15);
 
-SELECT
-Date_format(birth_day, '%d/%m/%Y') as birth_day
-FROM NguoiDung
-
-SELECT * from NguoiDung

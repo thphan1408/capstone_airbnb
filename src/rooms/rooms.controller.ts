@@ -3,8 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  HttpException,
-  HttpStatus,
   Param,
   Post,
   Put,
@@ -12,6 +10,7 @@ import {
   Req,
   Res,
   UploadedFile,
+  UploadedFiles,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -27,11 +26,12 @@ import {
 import { CreateRoomDto } from './dto/createRoom.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { UpdateRoomDto } from './dto/updateRoom.dto';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { fileUploadRoomDto } from './dto/fileUploadRoom.dto';
 import { UseImageUploadInterceptor } from 'src/utils/uploadFile';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+import { CreateImagesRoomDto } from './dto/createImagesRoom.dto';
 
 @ApiTags('Rooms')
 @Controller('api')
@@ -127,65 +127,145 @@ export class RoomsController {
   //   response.status(data.status).json(data);
   // }
 
-  @Post('/phong-thue/upload-hinh-phong')
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
-  @ApiConsumes('multipart/form-data')
-  @ApiBody({ type: fileUploadRoomDto })
-  @ApiQuery({ name: 'id', required: true, type: Number })
-  @UseInterceptors(FileInterceptor('file'))
-  async uploadImageRoom(
-    @UploadedFile('file') file: Express.Multer.File,
-    @Res() response,
-    @Query('id') id,
-  ): Promise<any> {
-    try {
-      const imageUrl = await this.cloudinaryService.uploadImage(
-        file,
-        'Airbnb-clone/rooms',
-      );
-
-      const data = await this.roomsService.uploadImageRoom(id, imageUrl);
-
-      if (data.status === 404) {
-        await this.cloudinaryService.deleteImage(imageUrl.public_id);
-      }
-      response.status(data.status).json(data);
-    } catch (error) {
-      response.status(500).json({
-        status: 500,
-        content: 'Internal Server Error',
-        message: error,
-      });
-    }
-  }
-
-  // upload nhiều file lên cloudinary
+  // Còn sẽ mở rộng thêm phần này
   // @Post('/phong-thue/upload-hinh-phong')
   // @ApiBearerAuth()
   // @UseGuards(AuthGuard('jwt'))
   // @ApiConsumes('multipart/form-data')
   // @ApiBody({ type: fileUploadRoomDto })
   // @ApiQuery({ name: 'id', required: true, type: Number })
-  // @UseInterceptors(FileInterceptor('files'))
-  // async uploadImagesRoom(
-  //   @UploadedFile() files: Express.Multer.File[],
+  // @UseInterceptors(FileInterceptor('file'))
+  // async uploadImageRoom(
+  //   @UploadedFile('file') file: Express.Multer.File,
   //   @Res() response,
   //   @Query('id') id,
   // ): Promise<any> {
   //   try {
-  //     const imageUrl = await this.cloudinaryService.uploadImages(
-  //       files,
+  //     const imageUrl = await this.cloudinaryService.uploadImage(
+  //       file,
   //       'Airbnb-clone/rooms',
   //     );
-  //     const data = await this.roomsService.uploadImagesRoom(id, imageUrl);
+
+  //     const data = await this.roomsService.uploadImageRoom(id, imageUrl);
+
+  //     if (data.status === 404) {
+  //       await this.cloudinaryService.deleteImage(imageUrl.public_id);
+  //     }
   //     response.status(data.status).json(data);
   //   } catch (error) {
   //     response.status(500).json({
   //       status: 500,
   //       content: 'Internal Server Error',
-  //       message: error.message,
+  //       message: error,
   //     });
   //   }
+  // }
+
+  // upload nhiều file lên cloudinary
+  
+  @Post('/phong-thue/upload-hinh-phong')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({ type: CreateImagesRoomDto })
+  @ApiQuery({ name: 'id', required: true, type: Number })
+  @UseInterceptors(FilesInterceptor('files', 5)) // Giới hạn upload tối đa 5 file
+  async uploadImagesRoom(
+    @UploadedFiles() files: Array<Express.Multer.File>,
+    @Res() response,
+    @Query('id') id,
+  ): Promise<any> {
+    try {
+      if (!files || files.length === 0 || files.length > 5) {
+        return response.status(400).json({
+          status: 400,
+          content: 'Bad Request',
+          message: 'No files uploaded or files uploaded exceed 5 files limit',
+        });
+      }
+
+      const imageUrl = await this.cloudinaryService.uploadImages(
+        files,
+        'Airbnb-clone/rooms',
+      );
+
+      const data = await this.roomsService.uploadImagesRoom(id, imageUrl);
+
+      if (data.status === 404) {
+        await this.cloudinaryService.deleteImages(
+          imageUrl.map((item) => item.public_id),
+        );
+      }
+      response.status(data.status).json(data);
+    } catch (error) {
+      response.status(500).json({
+        status: 500,
+        content: 'Internal Server Error',
+        message: error.message,
+      });
+    }
+  }
+
+  // Update hình ảnh phòng
+  @Put('/phong-thue/cap-nhat-hinh-phong/:id_hinh')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({ type: fileUploadRoomDto })
+  @ApiParam({ name: 'id_hinh', required: true, type: Number })
+  @UseInterceptors(FileInterceptor('file'))
+  async updateImagesRoom(
+    @UploadedFile() file: Express.Multer.File,
+    @Res() response,
+    @Param('id_hinh') id_hinh,
+  ): Promise<any> {
+    try {
+      if (!file) {
+        return response.status(400).json({
+          status: 400,
+          content: 'Bad Request',
+          message: 'No files uploaded',
+        });
+      }
+
+      // Xóa hình ảnh cũ trên cloudinary
+      const oldImage = await this.roomsService.getImagesRoom(id_hinh);
+      if (oldImage.status === 404) {
+        response.status(oldImage.status).json(oldImage);
+      }
+      await this.cloudinaryService.deleteImage(oldImage.data.public_id);
+
+      // Tải hình lên cloudinary
+      const imageUrl = await this.cloudinaryService.uploadImage(
+        file,
+        'Airbnb-clone/rooms',
+      );
+
+      const data = await this.roomsService.updateImageRoom(id_hinh, imageUrl);
+
+      if (data.status === 404) {
+        await this.cloudinaryService.deleteImage(imageUrl.public_id);
+      }
+
+      response.status(data.status).json(data);
+    } catch (error) {
+      response.status(500).json({
+        status: 500,
+        content: 'Internal Server Error',
+        message: error.message,
+      });
+    }
+  }
+
+  // @Delete('/phong-thue/xoa-hinh-phong/:id')
+  // @ApiBearerAuth()
+  // @UseGuards(AuthGuard('jwt'))
+  // @ApiParam({ name: 'id', required: true, type: Number })
+  // async deleteImageRoom(
+  //   @Param('id') id,
+  //   @Res() response,
+  // ): Promise<any> {
+  //   const data = await this.roomsService.deleteImageRoom(id);
+  //   response.status(data.status).json(data);
   // }
 }

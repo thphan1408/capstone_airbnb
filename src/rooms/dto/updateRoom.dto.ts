@@ -33,7 +33,5 @@ export class UpdateRoomDto {
   @ApiProperty()
   ho_boi: boolean;
   @ApiProperty()
-  hinh_anh: string;
-  @ApiProperty()
   ma_vi_tri: number;
 }
