@@ -36,12 +36,12 @@ export class AuthService {
         const newAvatar = initAvatar(name);
         const endcodePassword = bcrypt.hashSync(pass_word, 10);
         const newUser = {
-          name,
-          email,
+          name: name,
+          email: email,
           pass_word: endcodePassword,
-          phone,
-          birth_day,
-          gender,
+          phone: phone,
+          birth_day: new Date(birth_day),
+          gender: gender,
           role: 'User',
           avatar: newAvatar,
         };

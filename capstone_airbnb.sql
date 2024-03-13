@@ -1,3 +1,28 @@
+CREATE TABLE ViTri(
+    id_vi_tri INT PRIMARY KEY AUTO_INCREMENT,
+    ten_vi_tri VARCHAR(250),
+    tinh_thanh VARCHAR(250),
+    quoc_gia VARCHAR(250),
+    hinh_anh VARCHAR(250)
+) 
+
+INSERT INTO ViTri (ten_vi_tri, tinh_thanh, quoc_gia, hinh_anh) VALUES
+('Resort Vũng Tàu', 'Vũng Tàu', 'Việt Nam', 'resort_vungtau.jpg'),
+('Khách sạn Hồ Chí Minh', 'Hồ Chí Minh', 'Việt Nam', 'hotel_hochiminh.jpg'),
+('Biệt thự Đà Nẵng', 'Đà Nẵng', 'Việt Nam', 'villa_danang.jpg'),
+('Resort Phú Quốc', 'Phú Quốc', 'Việt Nam', 'resort_phuquoc.jpg'),
+('Khách sạn Nha Trang', 'Nha Trang', 'Việt Nam', 'hotel_nhatrang.jpg'),
+('Villa Hội An', 'Hội An', 'Việt Nam', 'villa_hoian.jpg'),
+('Resort Cần Thơ', 'Cần Thơ', 'Việt Nam', 'resort_cantho.jpg'),
+('Khách sạn Đà Lạt', 'Đà Lạt', 'Việt Nam', 'hotel_dalat.jpg'),
+('Biệt thự Hạ Long', 'Hạ Long', 'Việt Nam', 'villa_halong.jpg'),
+('Resort Ninh Bình', 'Ninh Bình', 'Việt Nam', 'resort_ninhbinh.jpg'),
+('Khách sạn Huế', 'Huế', 'Việt Nam', 'hotel_hue.jpg'),
+('Villa Đà Lat', 'Đà Lat', 'Việt Nam', 'villa_dalat.jpg'),
+('Resort Sapa', 'Sapa', 'Việt Nam', 'resort_sapa.jpg'),
+('Khách sạn Vũng Tàu', 'Vũng Tàu', 'Việt Nam', 'hotel_vungtau.jpg'),
+('Biệt thự Phan Thiết', 'Phan Thiết', 'Việt Nam', 'villa_phanthiet.jpg');
+
 CREATE TABLE NguoiDung(
     id_nguoi_dung INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(250),
@@ -8,7 +33,24 @@ CREATE TABLE NguoiDung(
     gender VARCHAR(250),
     role VARCHAR(250),
     avatar VARCHAR(255)
-) 
+)
+
+INSERT INTO NguoiDung (name, email, pass_word, phone, birth_day, gender, role, avatar) VALUES
+('Nguyễn Văn A', 'nguyenvana@example.com', 'password1', '0987654321', '1990-05-15', 'Nam', 'User', 'avatar1.jpg'),
+('Trần Thị B', 'tranthib@example.com', 'password2', '0123456789', '1985-08-20', 'Nữ', 'User', 'avatar2.jpg'),
+('Lê Văn C', 'levanc@example.com', 'password3', '0369841752', '1992-12-10', 'Nam', 'User', 'avatar3.jpg'),
+('Phạm Thị D', 'phamthid@example.com', 'password4', '0912345678', '1988-03-25', 'Nữ', 'User', 'avatar4.jpg'),
+('Hoàng Văn E', 'hoangvane@example.com', 'password5', '0567891234', '1995-07-30', 'Nam', 'User', 'avatar5.jpg'),
+('Nguyễn Thị F', 'nguyenthif@example.com', 'password6', '0345678912', '1993-10-05', 'Nữ', 'User', 'avatar6.jpg'),
+('Trần Văn G', 'tranvang@example.com', 'password7', '0789456123', '1987-02-18', 'Nam', 'User', 'avatar7.jpg'),
+('Lê Thị H', 'lethih@example.com', 'password8', '0991234567', '1991-06-20', 'Nữ', 'User', 'avatar8.jpg'),
+('Phan Văn I', 'phanvani@example.com', 'password9', '0678912345', '1989-09-12', 'Nam', 'User', 'avatar9.jpg'),
+('Vũ Thị K', 'vuthik@example.com', 'password10', '0555555555', '1994-11-28', 'Nữ', 'User', 'avatar10.jpg'),
+('Đặng Văn L', 'dangvanl@example.com', 'password11', '0333333333', '1996-04-10', 'Nam', 'User', 'avatar11.jpg'),
+('Bùi Thị M', 'buithim@example.com', 'password12', '0444444444', '1986-01-05', 'Nữ', 'User', 'avatar12.jpg'),
+('Lý Văn N', 'lyvann@example.com', 'password13', '0575757575', '1990-08-15', 'Nam', 'User', 'avatar13.jpg'),
+('Hồ Thị O', 'hothio@example.com', 'password14', '0888888888', '1984-12-20', 'Nữ', 'User', 'avatar14.jpg'),
+('Đoàn Văn P', 'doanvanp@example.com', 'password15', '0777777777', '1997-03-28', 'Nam', 'User', 'avatar15.jpg');
 
 CREATE TABLE Phong(
     id_phong INT PRIMARY KEY AUTO_INCREMENT,
@@ -31,83 +73,6 @@ CREATE TABLE Phong(
     FOREIGN KEY (ma_vi_tri) REFERENCES ViTri(id_vi_tri) ON DELETE CASCADE
 ) 
 
-CREATE TABLE DatPhong(
-    id_dat_phong INT PRIMARY KEY AUTO_INCREMENT,
-    ngay_den DATE,
-    ngay_di DATE,
-    so_luong_khach INT,
-    ma_phong INT,
-    ma_nguoi_dat INT,
-    FOREIGN KEY (ma_nguoi_dat) REFERENCES NguoiDung(id_nguoi_dung) ON DELETE CASCADE,
-    FOREIGN KEY (ma_phong) REFERENCES Phong(id_phong) ON DELETE CASCADE
-) 
-
-CREATE TABLE BinhLuan(
-    id_binh_luan INT PRIMARY KEY AUTO_INCREMENT,
-    noi_dung VARCHAR(250),
-    ngay_binh_luan DATE,
-    sao_binh_luan INT,
-    ma_nguoi_binh_luan INT,
-    ma_phong INT,
-    FOREIGN KEY (ma_nguoi_binh_luan) REFERENCES NguoiDung(id_nguoi_dung) ON DELETE CASCADE,
-    FOREIGN KEY (ma_phong) REFERENCES Phong(id_phong) ON DELETE CASCADE
-) 
-
-CREATE TABLE ViTri(
-    id_vi_tri INT PRIMARY KEY AUTO_INCREMENT,
-    ten_vi_tri VARCHAR(250),
-    tinh_thanh VARCHAR(250),
-    quoc_gia VARCHAR(250),
-    hinh_anh VARCHAR(250)
-) 
-
-CREATE TABLE HinhPhong(
-	id_hinh INT PRIMARY KEY AUTO_INCREMENT,
-	public_id TEXT,
-	url_hinh TEXT,
-	id_phong INT,
-	FOREIGN KEY (id_phong) REFERENCES Phong(id_phong) ON DELETE CASCADE
-) 
-
---- Thêm data NguoiDung
-INSERT INTO NguoiDung (name, email, pass_word, phone, birth_day, gender, role, avatar) VALUES
-('Nguyễn Văn A', 'nguyenvana@example.com', 'password1', '0987654321', '1990-05-15', 'Nam', 'User', 'avatar1.jpg'),
-('Trần Thị B', 'tranthib@example.com', 'password2', '0123456789', '1985-08-20', 'Nữ', 'User', 'avatar2.jpg'),
-('Lê Văn C', 'levanc@example.com', 'password3', '0369841752', '1992-12-10', 'Nam', 'User', 'avatar3.jpg'),
-('Phạm Thị D', 'phamthid@example.com', 'password4', '0912345678', '1988-03-25', 'Nữ', 'User', 'avatar4.jpg'),
-('Hoàng Văn E', 'hoangvane@example.com', 'password5', '0567891234', '1995-07-30', 'Nam', 'User', 'avatar5.jpg'),
-('Nguyễn Thị F', 'nguyenthif@example.com', 'password6', '0345678912', '1993-10-05', 'Nữ', 'User', 'avatar6.jpg'),
-('Trần Văn G', 'tranvang@example.com', 'password7', '0789456123', '1987-02-18', 'Nam', 'User', 'avatar7.jpg'),
-('Lê Thị H', 'lethih@example.com', 'password8', '0991234567', '1991-06-20', 'Nữ', 'User', 'avatar8.jpg'),
-('Phan Văn I', 'phanvani@example.com', 'password9', '0678912345', '1989-09-12', 'Nam', 'User', 'avatar9.jpg'),
-('Vũ Thị K', 'vuthik@example.com', 'password10', '0555555555', '1994-11-28', 'Nữ', 'User', 'avatar10.jpg'),
-('Đặng Văn L', 'dangvanl@example.com', 'password11', '0333333333', '1996-04-10', 'Nam', 'User', 'avatar11.jpg'),
-('Bùi Thị M', 'buithim@example.com', 'password12', '0444444444', '1986-01-05', 'Nữ', 'User', 'avatar12.jpg'),
-('Lý Văn N', 'lyvann@example.com', 'password13', '0575757575', '1990-08-15', 'Nam', 'User', 'avatar13.jpg'),
-('Hồ Thị O', 'hothio@example.com', 'password14', '0888888888', '1984-12-20', 'Nữ', 'User', 'avatar14.jpg'),
-('Đoàn Văn P', 'doanvanp@example.com', 'password15', '0777777777', '1997-03-28', 'Nam', 'User', 'avatar15.jpg');
-
-
---- Thêm data ViTri
-INSERT INTO ViTri (ten_vi_tri, tinh_thanh, quoc_gia, hinh_anh) VALUES
-('Resort Vũng Tàu', 'Vũng Tàu', 'Việt Nam', 'resort_vungtau.jpg'),
-('Khách sạn Hồ Chí Minh', 'Hồ Chí Minh', 'Việt Nam', 'hotel_hochiminh.jpg'),
-('Biệt thự Đà Nẵng', 'Đà Nẵng', 'Việt Nam', 'villa_danang.jpg'),
-('Resort Phú Quốc', 'Phú Quốc', 'Việt Nam', 'resort_phuquoc.jpg'),
-('Khách sạn Nha Trang', 'Nha Trang', 'Việt Nam', 'hotel_nhatrang.jpg'),
-('Villa Hội An', 'Hội An', 'Việt Nam', 'villa_hoian.jpg'),
-('Resort Cần Thơ', 'Cần Thơ', 'Việt Nam', 'resort_cantho.jpg'),
-('Khách sạn Đà Lạt', 'Đà Lạt', 'Việt Nam', 'hotel_dalat.jpg'),
-('Biệt thự Hạ Long', 'Hạ Long', 'Việt Nam', 'villa_halong.jpg'),
-('Resort Ninh Bình', 'Ninh Bình', 'Việt Nam', 'resort_ninhbinh.jpg'),
-('Khách sạn Huế', 'Huế', 'Việt Nam', 'hotel_hue.jpg'),
-('Villa Đà Lat', 'Đà Lat', 'Việt Nam', 'villa_dalat.jpg'),
-('Resort Sapa', 'Sapa', 'Việt Nam', 'resort_sapa.jpg'),
-('Khách sạn Vũng Tàu', 'Vũng Tàu', 'Việt Nam', 'hotel_vungtau.jpg'),
-('Biệt thự Phan Thiết', 'Phan Thiết', 'Việt Nam', 'villa_phanthiet.jpg');
-
-
---- Thêm data Phong
 INSERT INTO Phong (ten_phong, khach, phong_ngu, giuong, phong_tam, gia_tien, mo_ta, may_giat, ban_ui, tivi, dieu_hoa, wifi, bep, do_xe, ho_boi, ma_vi_tri) VALUES
 ('Phòng Deluxe', 2, 1, 1, 1, 1000000, 'Phòng sang trọng với view đẹp', TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, 1),
 ('Studio Apartment', 1, 1, 1, 1, 800000, 'Phòng studio tiện nghi cho 1 người', TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, 2),
@@ -125,8 +90,25 @@ INSERT INTO Phong (ten_phong, khach, phong_ngu, giuong, phong_tam, gia_tien, mo_
 ('Suite Deluxe', 2, 1, 1, 1, 1800000, 'Suite sang trọng với dịch vụ VIP', TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, 14),
 ('Phòng Twin', 2, 1, 1, 1, 1200000, 'Phòng cho 2 người với giường Twin', TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, 15);
 
+CREATE TABLE HinhPhong(
+	id_hinh INT PRIMARY KEY AUTO_INCREMENT,
+	public_id TEXT,
+	url_hinh TEXT,
+	id_phong INT,
+	FOREIGN KEY (id_phong) REFERENCES Phong(id_phong) ON DELETE CASCADE
+) 
 
---- Thêm data DatPhong
+CREATE TABLE DatPhong(
+    id_dat_phong INT PRIMARY KEY AUTO_INCREMENT,
+    ngay_den DATE,
+    ngay_di DATE,
+    so_luong_khach INT,
+    ma_phong INT,
+    ma_nguoi_dat INT,
+    FOREIGN KEY (ma_nguoi_dat) REFERENCES NguoiDung(id_nguoi_dung) ON DELETE CASCADE,
+    FOREIGN KEY (ma_phong) REFERENCES Phong(id_phong) ON DELETE CASCADE
+) 
+
 INSERT INTO DatPhong (ngay_den, ngay_di, so_luong_khach, ma_phong, ma_nguoi_dat)
 VALUES
     ('2024-02-17', '2024-02-20', 2, 1, 1),
@@ -144,8 +126,19 @@ VALUES
     ('2024-03-05', '2024-03-15', 5, 13, 11),
     ('2024-03-08', '2024-03-18', 3, 14, 14),
     ('2024-03-10', '2024-03-20', 2, 15, 15);
-    
---- Thêm data BinhLuan
+
+
+CREATE TABLE BinhLuan(
+    id_binh_luan INT PRIMARY KEY AUTO_INCREMENT,
+    noi_dung VARCHAR(250),
+    ngay_binh_luan DATE,
+    sao_binh_luan INT,
+    ma_nguoi_binh_luan INT,
+    ma_phong INT,
+    FOREIGN KEY (ma_nguoi_binh_luan) REFERENCES NguoiDung(id_nguoi_dung) ON DELETE CASCADE,
+    FOREIGN KEY (ma_phong) REFERENCES Phong(id_phong) ON DELETE CASCADE
+) 
+
 INSERT INTO BinhLuan (noi_dung, ngay_binh_luan, sao_binh_luan, ma_nguoi_binh_luan, ma_phong)
 VALUES
     ('Phòng sạch sẽ và thoáng đãng', '2024-02-17', 5, 1, 1),

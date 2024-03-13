@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsDate, IsNotEmpty } from 'class-validator';
 
 export default class signUpDTO {
   @ApiProperty()
@@ -16,7 +17,9 @@ export default class signUpDTO {
   phone: string;
 
   @ApiProperty()
-  birth_day: string;
+  @IsDate()
+  @Type(() => Date)
+  birth_day: Date;
 
   @ApiProperty()
   gender: string;
