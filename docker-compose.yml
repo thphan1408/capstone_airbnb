@@ -1,0 +1,25 @@
+version: '3'
+services:
+  airbnb_db:
+    image: mysql #pull image có tên là mysql trên docker hub về local
+    container_name: airbnb_db #trở thành host trong file .env của BE
+    environment:
+      - MYSQL_ROOT_PASSWORD=1234
+    ports:
+      - 3308:3306 #port của container
+    networks:
+      - airbnb-networks
+  airbnb_nest:
+    depends_on:
+      - airbnb_db
+    build: . # tìm Dockerfile trong source BE để build image BE
+    container_name: airbnb_nest
+    env_file:
+      - .env #file chứa các biến môi trường
+    ports:
+      - 8000:5000
+    networks:
+      - airbnb-networks
+networks:
+  airbnb-networks:
+

@@ -40,7 +40,7 @@ export class AuthService {
           email,
           pass_word: endcodePassword,
           phone,
-          birth_day,
+          birth_day: new Date(birth_day),
           gender,
           role: 'User',
           avatar: newAvatar,
